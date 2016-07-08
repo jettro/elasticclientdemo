@@ -1,0 +1,64 @@
+package nl.gridshore.elastic;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import nl.gridshore.Employee;
+
+/**
+ * Created by jettrocoenradie on 08/07/2016.
+ */
+public class Hit {
+    @JsonProperty(value = "_index")
+    private String index;
+
+    @JsonProperty(value = "_type")
+    private String type;
+
+    @JsonProperty(value = "_id")
+    private String id;
+
+    @JsonProperty(value = "_score")
+    private Double score;
+
+    @JsonProperty(value = "_source")
+    private Employee source;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
+    public Employee getSource() {
+        return source;
+    }
+
+    public void setSource(Employee source) {
+        this.source = source;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+}

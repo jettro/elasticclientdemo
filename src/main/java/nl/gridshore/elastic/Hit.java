@@ -1,12 +1,11 @@
 package nl.gridshore.elastic;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import nl.gridshore.Employee;
 
 /**
  * Created by jettrocoenradie on 08/07/2016.
  */
-public class Hit {
+public class Hit<T> {
     @JsonProperty(value = "_index")
     private String index;
 
@@ -20,7 +19,7 @@ public class Hit {
     private Double score;
 
     @JsonProperty(value = "_source")
-    private Employee source;
+    private T source;
 
     public String getId() {
         return id;
@@ -46,11 +45,11 @@ public class Hit {
         this.score = score;
     }
 
-    public Employee getSource() {
+    public T getSource() {
         return source;
     }
 
-    public void setSource(Employee source) {
+    public void setSource(T source) {
         this.source = source;
     }
 

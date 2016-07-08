@@ -1,12 +1,11 @@
 package nl.gridshore.elastic;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.gridshore.Employee;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.sniff.HostsSniffer;
@@ -18,10 +17,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -63,7 +60,7 @@ public class ConnectionService {
 
     public void createEmployee(Employee employee) {
         try {
-            HttpEntity requestBody  = new StringEntity(jacksonObjectMapper.writeValueAsString(employee));
+            HttpEntity requestBody = new StringEntity(jacksonObjectMapper.writeValueAsString(employee));
             Response response = client.performRequest(
                     "POST",
                     "/luminis/ams",
@@ -90,9 +87,12 @@ public class ConnectionService {
 
             HttpEntity entity = response.getEntity();
 
-            ResponseHits responseHits = jacksonObjectMapper.readValue(entity.getContent(), ResponseHits.class);
+            TypeReference ref = new TypeReference<ResponseHits<Employee>>() {
+            };
+            ResponseHits<Employee> responseHits = jacksonObjectMapper.readValue(entity.getContent(), ref);
 
             response.close();
+
 
             return responseHits.getHits().getHits().stream()
                     .map(Hit::getSource)

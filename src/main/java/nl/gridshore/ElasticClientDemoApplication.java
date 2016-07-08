@@ -20,7 +20,7 @@ public class ElasticClientDemoApplication {
         System.out.println(clusterHealth);
 
 //        Employee emp = new Employee();
-//        emp.setEmployee("Jettro");
+//        emp.setEmployee("Jettro Coen");
 //        bean.createEmployee(emp);
 
         List<Employee> jettro = bean.findEmployees("jettro");

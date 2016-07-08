@@ -1,5 +1,7 @@
 package nl.gridshore.elastic;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -7,6 +9,10 @@ import java.util.List;
  */
 public class Hits<T> {
     private List<Hit<T>> hits;
+    private Long total;
+
+    @JsonProperty("max_score")
+    private Double maxScore;
 
     public List<Hit<T>> getHits() {
         return hits;
@@ -14,5 +20,21 @@ public class Hits<T> {
 
     public void setHits(List<Hit<T>> hits) {
         this.hits = hits;
+    }
+
+    public Long getTotal() {
+        return total;
+    }
+
+    public void setTotal(Long total) {
+        this.total = total;
+    }
+
+    public Double getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(Double maxScore) {
+        this.maxScore = maxScore;
     }
 }

@@ -87,8 +87,7 @@ public class ConnectionService {
 
             HttpEntity entity = response.getEntity();
 
-            TypeReference ref = new TypeReference<ResponseHits<Employee>>() {
-            };
+            TypeReference ref = new TypeReference<ResponseHits<Employee>>() {};
             ResponseHits<Employee> responseHits = jacksonObjectMapper.readValue(entity.getContent(), ref);
 
             response.close();

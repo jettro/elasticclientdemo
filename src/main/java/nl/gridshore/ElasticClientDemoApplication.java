@@ -24,7 +24,7 @@ public class ElasticClientDemoApplication {
 
         System.out.println(clusterHealth);
 
-//        createEmployee(employeeService);
+        createEmployee(employeeService);
 
         System.out.println("Should only print one result");
         queryForEmployees(employeeService, "Jettro Coenradie");

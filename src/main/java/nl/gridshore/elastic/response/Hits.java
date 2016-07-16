@@ -1,4 +1,4 @@
-package nl.gridshore.elastic;
+package nl.gridshore.elastic.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

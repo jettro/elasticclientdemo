@@ -1,8 +1,7 @@
 package nl.gridshore.elastic;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.gridshore.Employee;
+import nl.gridshore.elastic.response.ResponseHandler;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.entity.StringEntity;
@@ -16,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by jettrocoenradie on 07/07/2016.
@@ -31,11 +30,15 @@ public class ConnectionService {
     private RestClient client;
     private Sniffer sniffer;
 
-    @Autowired
-    private ObjectMapper jacksonObjectMapper;
+    private final ObjectMapper jacksonObjectMapper;
+
+    private final LoggingFailureListener loggingFailureListener;
 
     @Autowired
-    private LoggingFailureListener loggingFailureListener;
+    public ConnectionService(ObjectMapper jacksonObjectMapper, LoggingFailureListener loggingFailureListener) {
+        this.jacksonObjectMapper = jacksonObjectMapper;
+        this.loggingFailureListener = loggingFailureListener;
+    }
 
     public ClusterHealth checkClusterHealth() {
         try {
@@ -58,14 +61,13 @@ public class ConnectionService {
         }
     }
 
-    public void createEmployee(Employee employee) {
+    public void indexDocument(String index, String type, HttpEntity entity) {
         try {
-            HttpEntity requestBody = new StringEntity(jacksonObjectMapper.writeValueAsString(employee));
             Response response = client.performRequest(
                     "POST",
-                    "/luminis/ams",
+                    index + "/" + type,
                     new Hashtable<>(),
-                    requestBody);
+                    entity);
 
             response.close();
 
@@ -76,31 +78,25 @@ public class ConnectionService {
 
     }
 
-    public List<Employee> findEmployees(String employee) {
+    public void executeQuery(String indexString, String query, ResponseHandler handler) {
+        logger.debug("Query to be executed {}", query);
+
         try {
-            String query = "{\"query\":{\"match\":{\"employee\":\"" + employee + "\"}}}";
             Response response = client.performRequest(
                     "GET",
-                    "/luminis/_search",
+                    indexString + "/_search",
                     new Hashtable<>(),
-                    new StringEntity(query));
+                    new StringEntity(query, Charset.defaultCharset()));
 
-            HttpEntity entity = response.getEntity();
-
-            TypeReference ref = new TypeReference<ResponseHits<Employee>>() {};
-            ResponseHits<Employee> responseHits = jacksonObjectMapper.readValue(entity.getContent(), ref);
+            handler.handle(response.getEntity());
 
             response.close();
-
-
-            return responseHits.getHits().getHits().stream()
-                    .map(Hit::getSource)
-                    .collect(Collectors.toList());
 
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);
             throw new QueryExecutionException("Error when executing a query");
         }
+
     }
 
     @PostConstruct
@@ -114,5 +110,14 @@ public class ConnectionService {
                 HostsSniffer.builder(this.client).setScheme(HostsSniffer.Scheme.HTTP)
                         .build()
         ).build();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        try {
+            this.sniffer.close();
+        } catch (IOException e) {
+            logger.warn("Failed to close the elasticsearch sniffer");
+        }
     }
 }

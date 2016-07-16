@@ -1,4 +1,4 @@
-package nl.gridshore;
+package nl.gridshore.employees;
 
 /**
  * Created by jettrocoenradie on 07/07/2016.

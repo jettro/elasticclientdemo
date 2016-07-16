@@ -1,0 +1,14 @@
+{
+    "query":{
+{% if (length(employee)==0) %}
+        "match_all": {}
+{% else %}
+        "match":{
+            "employee": {
+                "query": "{{ employee }}",
+                "operator": "{{ default(operator, 'or') }}"
+            }
+        }
+{% endif %}
+    }
+}

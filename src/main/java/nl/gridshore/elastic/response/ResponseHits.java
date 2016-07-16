@@ -1,10 +1,8 @@
-package nl.gridshore.elastic;
+package nl.gridshore.elastic.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by jettrocoenradie on 08/07/2016.
- */
+
 public class ResponseHits<T> {
     private Long took;
 
@@ -16,6 +14,8 @@ public class ResponseHits<T> {
 
     private Hits<T> hits;
 
+
+    /* Getters / Setters */
     public Hits<T> getHits() {
         return hits;
     }

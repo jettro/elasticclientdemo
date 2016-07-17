@@ -20,6 +20,7 @@ public class QueryTemplate<T> {
     private final ObjectMapper jacksonObjectMapper;
 
     private String query;
+    private String indexString;
     private TypeReference typeReference;
 
     public QueryTemplate(ConnectionService connectionService, ObjectMapper jacksonObjectMapper) {
@@ -30,7 +31,7 @@ public class QueryTemplate<T> {
     public List<T> execute() {
         List<T> result = new ArrayList<>();
 
-        this.connectionService.executeQuery("luminis", this.query, entity -> {
+        this.connectionService.executeQuery(indexString, query(), entity -> {
             try {
                 ResponseHits<T> responseHits = jacksonObjectMapper.readValue(entity.getContent(), this.typeReference);
 
@@ -55,6 +56,10 @@ public class QueryTemplate<T> {
 
     public void setQueryTypeReference(TypeReference typeReference) {
         this.typeReference = typeReference;
+    }
+
+    public void setIndexString(String indexString) {
+        this.indexString = indexString;
     }
 
     public String query() {

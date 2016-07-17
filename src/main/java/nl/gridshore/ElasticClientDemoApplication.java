@@ -1,16 +1,14 @@
 package nl.gridshore;
 
-import nl.gridshore.elastic.*;
+import nl.gridshore.elastic.ClusterHealth;
+import nl.gridshore.elastic.ConnectionService;
 import nl.gridshore.employees.Employee;
 import nl.gridshore.employees.EmployeeService;
-import nl.gridshore.employees.EmployeeTypeReference;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @SpringBootApplication
 public class ElasticClientDemoApplication {
@@ -24,13 +22,19 @@ public class ElasticClientDemoApplication {
 
         System.out.println(clusterHealth);
 
-        createEmployee(employeeService);
+        if (!connectionService.indexExist(EmployeeService.INDEX)) {
+            createEmployees(employeeService);
+        }
 
         System.out.println("Should only print one result");
         queryForEmployees(employeeService, "Jettro Coenradie");
 
         System.out.println("Should do a match_all query");
         queryForEmployees(employeeService, "");
+
+        System.out.println("Should do a multi_match on name and email query");
+        List<Employee> foundEmployees = employeeService.queryForEmployeesByNameAndEmail("gridshore.nl");
+        foundEmployees.forEach(System.out::println);
     }
 
     private static void queryForEmployees(EmployeeService employeeService, String name) {
@@ -38,10 +42,37 @@ public class ElasticClientDemoApplication {
         foundEmployees.forEach(System.out::println);
     }
 
-    private static void createEmployee(EmployeeService employeeService) {
-        Employee emp = new Employee();
-        emp.setEmployee("Ian Coenradie");
+    private static void createEmployees(EmployeeService employeeService) {
+        Employee jettro = new Employee();
+        jettro.setName("Jettro Coenradie");
+        jettro.setEmail("jettro@gridshore.nl");
+        jettro.setPhoneNumber("+31612345678");
+        jettro.setSpecialties(new String[]{"java", "elasticsearch", "angularjs"});
 
-        employeeService.createEmployee(emp);
+        employeeService.createEmployee(jettro);
+
+        Employee byron = new Employee();
+        byron.setName("Byron Voorbach");
+        byron.setEmail("byron@gridshore.nl");
+        byron.setPhoneNumber("+31612345678");
+        byron.setSpecialties(new String[]{"java", "elasticsearch", "security"});
+
+        employeeService.createEmployee(byron);
+
+        Employee ralph = new Employee();
+        ralph.setName("Ralph Broers");
+        ralph.setEmail("ralph@gridshore.nl");
+        ralph.setPhoneNumber("+31612345678");
+        ralph.setSpecialties(new String[]{"java", "elasticsearch", "rx"});
+
+        employeeService.createEmployee(ralph);
+
+        Employee roberto = new Employee();
+        roberto.setName("Roberto van der Linden");
+        roberto.setEmail("roberto@gridshore.nl");
+        roberto.setPhoneNumber("+31612345678");
+        roberto.setSpecialties(new String[]{"java", "elasticsearch", "ionicframework"});
+
+        employeeService.createEmployee(roberto);
     }
 }

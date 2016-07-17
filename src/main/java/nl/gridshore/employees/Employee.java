@@ -1,23 +1,55 @@
 package nl.gridshore.employees;
 
-/**
- * Created by jettrocoenradie on 07/07/2016.
- */
-public class Employee {
-    private String employee;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public String getEmployee() {
-        return employee;
+import java.util.Arrays;
+
+public class Employee {
+    private String name;
+    private String email;
+    @JsonProperty(value = "phone_number")
+    private String phoneNumber;
+    private String[] specialties;
+
+    public String getName() {
+        return name;
     }
 
-    public void setEmployee(String employee) {
-        this.employee = employee;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String[] getSpecialties() {
+        return specialties;
+    }
+
+    public void setSpecialties(String[] specialties) {
+        this.specialties = specialties;
     }
 
     @Override
     public String toString() {
         return "Employee{" +
-                "employee='" + employee + '\'' +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", specialties=" + Arrays.toString(specialties) +
                 '}';
     }
 }

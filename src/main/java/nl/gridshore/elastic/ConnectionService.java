@@ -12,6 +12,7 @@ import org.elasticsearch.client.sniff.Sniffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +34,8 @@ public class ConnectionService {
     private final ObjectMapper jacksonObjectMapper;
 
     private final LoggingFailureListener loggingFailureListener;
+
+    private String[] hostnames;
 
     @Autowired
     public ConnectionService(ObjectMapper jacksonObjectMapper, LoggingFailureListener loggingFailureListener) {
@@ -58,6 +61,32 @@ public class ConnectionService {
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);
             throw new QueryExecutionException("Error when executing a query");
+        }
+    }
+
+    public Boolean indexExist(String indexName) {
+        try {
+            Response response = client.performRequest(
+                    "HEAD",
+                    indexName,
+                    new Hashtable<>(),
+                    null
+            );
+
+            int statusCode = response.getStatusLine().getStatusCode();
+
+            response.close();
+
+            if (statusCode == 200) {
+                return true;
+            } else if (statusCode == 404) {
+                return false;
+            } else {
+                throw new QueryExecutionException("Could not check index existence, status code is " + statusCode);
+            }
+        } catch (IOException e) {
+            logger.warn("Problem while verifying if index exists.", e);
+            throw new QueryExecutionException("Error when checking for existing index.");
         }
     }
 
@@ -99,10 +128,19 @@ public class ConnectionService {
 
     }
 
+    @Value("${elastic.hostnames}")
+    public void setHostnames(String[] hostnames) {
+        this.hostnames = hostnames;
+    }
+
     @PostConstruct
     public void afterCreation() {
+        HttpHost[] hosts = new HttpHost[hostnames.length];
+        for (int i = 0; i < hosts.length; i++) {
+            hosts[i] = HttpHost.create(hostnames[i]);
+        }
         this.client = RestClient
-                .builder(new HttpHost("localhost", 9200))
+                .builder(hosts)
                 .setFailureListener(loggingFailureListener)
                 .build();
 

@@ -1,0 +1,13 @@
+{
+    "query":{
+{% if (length(searchText)==0) %}
+        "match_all": {}
+{% else %}
+        "multi_match": {
+            "query": "{{ searchText }}",
+            "operator": "{{ default(operator, 'or') }}",
+            "fields": ["name","email"]
+        }
+{% endif %}
+    }
+}

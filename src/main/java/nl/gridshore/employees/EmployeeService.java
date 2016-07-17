@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Service
 public class EmployeeService {
-    private static final String INDEX = "luminis";
+    public static final String INDEX = "luminis";
     private static final String TYPE = "ams";
 
     private QueryTemplateFactory queryTemplateFactory;
@@ -35,11 +35,25 @@ public class EmployeeService {
 
     public List<Employee> queryForEmployees(String name) {
         Map<String, Object> params = new HashMap<>();
-        params.put("employee", name);
+        params.put("name", name);
         params.put("operator", "and");
 
         QueryTemplate<Employee> queryTemplate = queryTemplateFactory.createQueryTemplate();
+        queryTemplate.setIndexString(INDEX);
         queryTemplate.setQueryFromTemplate("find_employee.twig", params);
+        queryTemplate.setQueryTypeReference(new EmployeeTypeReference());
+
+        return queryTemplate.execute();
+    }
+
+    public List<Employee> queryForEmployeesByNameAndEmail(String searchString) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("searchText", searchString);
+        params.put("operator", "and");
+
+        QueryTemplate<Employee> queryTemplate = queryTemplateFactory.createQueryTemplate();
+        queryTemplate.setIndexString(INDEX);
+        queryTemplate.setQueryFromTemplate("find_employee_by_email.twig", params);
         queryTemplate.setQueryTypeReference(new EmployeeTypeReference());
 
         return queryTemplate.execute();

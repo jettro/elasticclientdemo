@@ -1,4 +1,4 @@
-package nl.gridshore.elastic.response;
+package nl.gridshore.elastic;
 
 import org.apache.http.HttpEntity;
 

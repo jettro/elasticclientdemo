@@ -1,4 +1,4 @@
-package nl.gridshore.elastic;
+package nl.gridshore.elastic.index;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,22 +11,22 @@ import java.nio.charset.Charset;
 
 public class IndexTemplate<T> {
     private final static Logger logger = LoggerFactory.getLogger(IndexTemplate.class);
-    private final ConnectionService connectionService;
+    private final IndexService indexService;
     private final ObjectMapper jacksonObjectMapper;
 
     private T docToIndex;
     private String index;
     private String type;
 
-    public IndexTemplate(ConnectionService connectionService, ObjectMapper jacksonObjectMapper) {
-        this.connectionService = connectionService;
+    public IndexTemplate(IndexService queryService, ObjectMapper jacksonObjectMapper) {
+        this.indexService = queryService;
         this.jacksonObjectMapper = jacksonObjectMapper;
     }
 
     public void execute() {
         try {
             HttpEntity requestBody = new StringEntity(jacksonObjectMapper.writeValueAsString(docToIndex), Charset.defaultCharset());
-            connectionService.indexDocument(index,type,requestBody);
+            indexService.indexDocument(index,type,requestBody);
         } catch (JsonProcessingException e) {
             logger.warn("Error parsing doc to json", e);
             throw new IndexDocumentException("Could not transform provided document into json");

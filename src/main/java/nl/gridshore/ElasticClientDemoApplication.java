@@ -1,7 +1,9 @@
 package nl.gridshore;
 
-import nl.gridshore.elastic.ClusterHealth;
-import nl.gridshore.elastic.ConnectionService;
+import nl.gridshore.elastic.cluster.ClusterService;
+import nl.gridshore.elastic.cluster.response.ClusterHealth;
+import nl.gridshore.elastic.query.QueryService;
+import nl.gridshore.elastic.index.IndexService;
 import nl.gridshore.employees.Employee;
 import nl.gridshore.employees.EmployeeService;
 import org.springframework.boot.SpringApplication;
@@ -15,14 +17,17 @@ public class ElasticClientDemoApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(ElasticClientDemoApplication.class, args);
-        ConnectionService connectionService = context.getBean(ConnectionService.class);
-        EmployeeService employeeService = context.getBean(EmployeeService.class);
 
-        ClusterHealth clusterHealth = connectionService.checkClusterHealth();
+        QueryService queryService = context.getBean(QueryService.class);
+        EmployeeService employeeService = context.getBean(EmployeeService.class);
+        ClusterService clusterService = context.getBean(ClusterService.class);
+        IndexService indexService = context.getBean(IndexService.class);
+
+        ClusterHealth clusterHealth = clusterService.checkClusterHealth();
 
         System.out.println(clusterHealth);
 
-        if (!connectionService.indexExist(EmployeeService.INDEX)) {
+        if (!indexService.indexExist(EmployeeService.INDEX)) {
             createEmployees(employeeService);
         }
 

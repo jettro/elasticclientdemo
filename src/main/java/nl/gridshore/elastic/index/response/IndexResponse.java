@@ -1,4 +1,4 @@
-package nl.gridshore.elastic.response;
+package nl.gridshore.elastic.index.response;
 
 /**
  * Created by jettrocoenradie on 16/07/16.

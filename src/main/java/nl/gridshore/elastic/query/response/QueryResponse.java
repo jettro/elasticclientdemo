@@ -1,9 +1,9 @@
-package nl.gridshore.elastic.response;
+package nl.gridshore.elastic.query.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public class ResponseHits<T> {
+public class QueryResponse<T> {
     private Long took;
 
     @JsonProperty(value = "timed_out")
@@ -13,7 +13,6 @@ public class ResponseHits<T> {
     private Shards shards;
 
     private Hits<T> hits;
-
 
     /* Getters / Setters */
     public Hits<T> getHits() {

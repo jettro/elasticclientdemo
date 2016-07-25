@@ -1,8 +1,9 @@
 package nl.gridshore.employees;
 
-import nl.gridshore.elastic.IndexTemplate;
-import nl.gridshore.elastic.QueryTemplate;
-import nl.gridshore.elastic.QueryTemplateFactory;
+import nl.gridshore.elastic.index.IndexTemplate;
+import nl.gridshore.elastic.index.IndexTemplateFactory;
+import nl.gridshore.elastic.query.QueryTemplate;
+import nl.gridshore.elastic.query.QueryTemplateFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +20,16 @@ public class EmployeeService {
     private static final String TYPE = "ams";
 
     private QueryTemplateFactory queryTemplateFactory;
+    private IndexTemplateFactory indexTemplateFactory;
 
     @Autowired
-    public EmployeeService(QueryTemplateFactory queryTemplateFactory) {
+    public EmployeeService(QueryTemplateFactory queryTemplateFactory, IndexTemplateFactory indexTemplateFactory) {
         this.queryTemplateFactory = queryTemplateFactory;
+        this.indexTemplateFactory = indexTemplateFactory;
     }
 
     public void createEmployee(Employee employee) {
-        IndexTemplate<Employee> indexTemplate = queryTemplateFactory.createIndexTemplate();
+        IndexTemplate<Employee> indexTemplate = indexTemplateFactory.createIndexTemplate();
         indexTemplate.setDocToIndex(employee);
         indexTemplate.setIndex(INDEX);
         indexTemplate.setType(TYPE);

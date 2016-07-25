@@ -1,7 +1,7 @@
-package nl.gridshore.elastic;
+package nl.gridshore.elastic.query;
 
 /**
- * Exception throws when exlastic throws an error.
+ * Exception thrown when elastic throws an error.
  */
 public class QueryExecutionException extends RuntimeException {
     public QueryExecutionException(String message) {

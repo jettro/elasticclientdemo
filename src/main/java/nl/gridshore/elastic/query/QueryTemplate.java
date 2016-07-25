@@ -1,8 +1,8 @@
-package nl.gridshore.elastic;
+package nl.gridshore.elastic.query;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.gridshore.elastic.response.ResponseHits;
+import nl.gridshore.elastic.query.response.QueryResponse;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.slf4j.Logger;
@@ -16,26 +16,26 @@ import java.util.Map;
 public class QueryTemplate<T> {
     private final static Logger logger = LoggerFactory.getLogger(QueryTemplate.class);
 
-    private final ConnectionService connectionService;
+    private final QueryService queryService;
     private final ObjectMapper jacksonObjectMapper;
 
     private String query;
     private String indexString;
     private TypeReference typeReference;
 
-    public QueryTemplate(ConnectionService connectionService, ObjectMapper jacksonObjectMapper) {
-        this.connectionService = connectionService;
+    public QueryTemplate(QueryService queryService, ObjectMapper jacksonObjectMapper) {
+        this.queryService = queryService;
         this.jacksonObjectMapper = jacksonObjectMapper;
     }
 
     public List<T> execute() {
         List<T> result = new ArrayList<>();
 
-        this.connectionService.executeQuery(indexString, query(), entity -> {
+        this.queryService.executeQuery(indexString, query(), entity -> {
             try {
-                ResponseHits<T> responseHits = jacksonObjectMapper.readValue(entity.getContent(), this.typeReference);
+                QueryResponse<T> queryResponse = jacksonObjectMapper.readValue(entity.getContent(), this.typeReference);
 
-                responseHits.getHits().getHits().forEach(tHit -> {
+                queryResponse.getHits().getHits().forEach(tHit -> {
                     result.add(tHit.getSource());
                 });
             } catch (IOException e) {

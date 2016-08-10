@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Hashtable;
 
 /**
  * Service that provides access to the elastic cluster services.
@@ -31,22 +30,18 @@ public class ClusterService {
 
     /**
      * Returns the current health of the cluster as a {@link ClusterHealth} object.
+     *
      * @return ClusterHealth containing the basic properties of the health of the cluster
      */
     public ClusterHealth checkClusterHealth() {
         try {
             Response response = client.performRequest(
                     "GET",
-                    "/_cluster/health",
-                    new Hashtable<>(),
-                    null);
+                    "/_cluster/health"
+            );
             HttpEntity entity = response.getEntity();
 
-            ClusterHealth clusterHealth = jacksonObjectMapper.readValue(entity.getContent(), ClusterHealth.class);
-
-            response.close();
-
-            return clusterHealth;
+            return jacksonObjectMapper.readValue(entity.getContent(), ClusterHealth.class);
 
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);

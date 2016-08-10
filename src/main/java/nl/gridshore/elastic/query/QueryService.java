@@ -38,9 +38,6 @@ public class QueryService {
                     new StringEntity(query, Charset.defaultCharset()));
 
             handler.handle(response.getEntity());
-
-            response.close();
-
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);
             throw new QueryExecutionException("Error when executing a query");

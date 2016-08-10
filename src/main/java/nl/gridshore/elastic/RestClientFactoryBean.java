@@ -2,7 +2,6 @@ package nl.gridshore.elastic;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.sniff.HostsSniffer;
 import org.elasticsearch.client.sniff.Sniffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +46,7 @@ public class RestClientFactoryBean extends AbstractFactoryBean<RestClient> {
                 .setFailureListener(loggingFailureListener)
                 .build();
 
-        this.sniffer = Sniffer.builder(restClient,
-                HostsSniffer.builder(restClient).setScheme(HostsSniffer.Scheme.HTTP)
-                        .build()
-        ).build();
+        this.sniffer = Sniffer.builder(restClient).build();
 
         return restClient;
     }

@@ -31,20 +31,17 @@ public class IndexService {
         try {
             Response response = client.performRequest(
                     "HEAD",
-                    indexName,
-                    new Hashtable<>(),
-                    null
+                    indexName
             );
 
             int statusCode = response.getStatusLine().getStatusCode();
-
-            response.close();
 
             if (statusCode == 200) {
                 return true;
             } else if (statusCode == 404) {
                 return false;
             } else {
+                logger.warn("Problem while checking index existence: {}", response.getStatusLine().getReasonPhrase());
                 throw new QueryExecutionException("Could not check index existence, status code is " + statusCode);
             }
         } catch (IOException e) {
@@ -61,7 +58,11 @@ public class IndexService {
                     new Hashtable<>(),
                     entity);
 
-            response.close();
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode > 299) {
+                logger.warn("Problem while indexing a document: {}", response.getStatusLine().getReasonPhrase());
+                throw new QueryExecutionException("Could not index a document, status code is " + statusCode);
+            }
 
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);

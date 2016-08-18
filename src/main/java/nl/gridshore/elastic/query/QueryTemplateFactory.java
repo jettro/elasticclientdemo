@@ -22,4 +22,8 @@ public class QueryTemplateFactory {
     public <T> QueryTemplate<T> createQueryTemplate() {
         return new QueryTemplate<T>(queryService, jacksonObjectMapper);
     }
+
+    public <T> QueryByIdTemplate<T> createQueryByIdTemplate() {
+        return new QueryByIdTemplate<T>(queryService, jacksonObjectMapper);
+    }
 }

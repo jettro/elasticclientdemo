@@ -1,6 +1,7 @@
 package nl.gridshore.elastic.query;
 
 import nl.gridshore.elastic.ResponseHandler;
+import nl.gridshore.elastic.query.response.GetByIdResponse;
 import org.apache.http.entity.StringEntity;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
@@ -36,6 +37,19 @@ public class QueryService {
                     indexString + "/_search",
                     new Hashtable<>(),
                     new StringEntity(query, Charset.defaultCharset()));
+
+            handler.handle(response.getEntity());
+        } catch (IOException e) {
+            logger.warn("Problem while executing request.", e);
+            throw new QueryExecutionException("Error when executing a query");
+        }
+    }
+
+    public void executeGetById(String index, String type, String id, GetIdResponseHandler handler) {
+        try {
+            Response response = client.performRequest(
+                    "GET",
+                    index + "/" + type +"/" + id);
 
             handler.handle(response.getEntity());
         } catch (IOException e) {

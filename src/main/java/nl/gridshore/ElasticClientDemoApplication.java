@@ -40,6 +40,7 @@ public class ElasticClientDemoApplication {
         System.out.println("Should do a multi_match on name and email query");
         List<Employee> foundEmployees = employeeService.queryForEmployeesByNameAndEmail("gridshore.nl");
         foundEmployees.forEach(System.out::println);
+
     }
 
     private static void queryForEmployees(EmployeeService employeeService, String name) {

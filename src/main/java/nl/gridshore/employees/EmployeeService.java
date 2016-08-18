@@ -2,6 +2,7 @@ package nl.gridshore.employees;
 
 import nl.gridshore.elastic.index.IndexTemplate;
 import nl.gridshore.elastic.index.IndexTemplateFactory;
+import nl.gridshore.elastic.query.QueryByIdTemplate;
 import nl.gridshore.elastic.query.QueryTemplate;
 import nl.gridshore.elastic.query.QueryTemplateFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class EmployeeService {
         queryTemplate.setIndexString(INDEX);
         queryTemplate.setQueryFromTemplate("find_employee.twig", params);
         queryTemplate.setQueryTypeReference(new EmployeeTypeReference());
+        queryTemplate.addId(true);
 
         return queryTemplate.execute();
     }
@@ -58,8 +60,18 @@ public class EmployeeService {
         queryTemplate.setIndexString(INDEX);
         queryTemplate.setQueryFromTemplate("find_employee_by_email.twig", params);
         queryTemplate.setQueryTypeReference(new EmployeeTypeReference());
+        queryTemplate.addId(true);
 
         return queryTemplate.execute();
     }
 
+    public Employee loadEmployeeById(String id) {
+        QueryByIdTemplate<Employee> queryByIdTemplate = queryTemplateFactory.createQueryByIdTemplate();
+        queryByIdTemplate.setId(id);
+        queryByIdTemplate.setIndex(INDEX);
+        queryByIdTemplate.setType(TYPE);
+        queryByIdTemplate.setTypeReference(new EmployeeByIdTypeReference());
+
+        return queryByIdTemplate.execute();
+    }
 }

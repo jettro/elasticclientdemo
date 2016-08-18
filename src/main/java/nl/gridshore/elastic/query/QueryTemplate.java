@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ public class QueryTemplate<T> {
     private String query;
     private String indexString;
     private TypeReference typeReference;
+    private boolean addId = false;
 
     public QueryTemplate(QueryService queryService, ObjectMapper jacksonObjectMapper) {
         this.queryService = queryService;
@@ -36,7 +39,19 @@ public class QueryTemplate<T> {
                 QueryResponse<T> queryResponse = jacksonObjectMapper.readValue(entity.getContent(), this.typeReference);
 
                 queryResponse.getHits().getHits().forEach(tHit -> {
-                    result.add(tHit.getSource());
+                    T source = tHit.getSource();
+                    if (addId) {
+                        Method setIdMethod = null;
+                        try {
+                            setIdMethod = source.getClass().getMethod("setId", String.class);
+                            setIdMethod.invoke(source,tHit.getId());
+                        } catch (NoSuchMethodException | InvocationTargetException e) {
+                            throw new QueryExecutionException("The setter for the id method is not available.",e);
+                        } catch (IllegalAccessException e) {
+                            throw new QueryExecutionException("Id argument seems to be wrong",e);
+                        }
+                    }
+                    result.add(source);
                 });
             } catch (IOException e) {
                 logger.warn("Cannot execute query", e);
@@ -60,6 +75,10 @@ public class QueryTemplate<T> {
 
     public void setIndexString(String indexString) {
         this.indexString = indexString;
+    }
+
+    public void addId(boolean addId) {
+        this.addId = addId;
     }
 
     public String query() {

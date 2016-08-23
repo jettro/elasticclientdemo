@@ -1,10 +1,9 @@
 package nl.gridshore.employees;
 
-import nl.gridshore.elastic.index.IndexTemplate;
-import nl.gridshore.elastic.index.IndexTemplateFactory;
-import nl.gridshore.elastic.query.QueryByIdTemplate;
-import nl.gridshore.elastic.query.QueryTemplate;
-import nl.gridshore.elastic.query.QueryTemplateFactory;
+import nl.gridshore.elastic.ElasticTemplate;
+import nl.gridshore.elastic.IndexRequest;
+import nl.gridshore.elastic.QueryByIdRequest;
+import nl.gridshore.elastic.QueryByTemplateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,21 +19,20 @@ public class EmployeeService {
     public static final String INDEX = "luminis";
     private static final String TYPE = "ams";
 
-    private QueryTemplateFactory queryTemplateFactory;
-    private IndexTemplateFactory indexTemplateFactory;
+    private final ElasticTemplate elasticTemplate;
 
     @Autowired
-    public EmployeeService(QueryTemplateFactory queryTemplateFactory, IndexTemplateFactory indexTemplateFactory) {
-        this.queryTemplateFactory = queryTemplateFactory;
-        this.indexTemplateFactory = indexTemplateFactory;
+    public EmployeeService(ElasticTemplate elasticTemplate) {
+        this.elasticTemplate = elasticTemplate;
     }
 
     public void createEmployee(Employee employee) {
-        IndexTemplate<Employee> indexTemplate = indexTemplateFactory.createIndexTemplate();
-        indexTemplate.setDocToIndex(employee);
-        indexTemplate.setIndex(INDEX);
-        indexTemplate.setType(TYPE);
-        indexTemplate.execute();
+        IndexRequest request = IndexRequest.create()
+                .setIndex(INDEX)
+                .setType(TYPE)
+                .setEntity(employee);
+
+        elasticTemplate.index(request);
     }
 
     public List<Employee> queryForEmployees(String name) {
@@ -42,13 +40,14 @@ public class EmployeeService {
         params.put("name", name);
         params.put("operator", "and");
 
-        QueryTemplate<Employee> queryTemplate = queryTemplateFactory.createQueryTemplate();
-        queryTemplate.setIndexString(INDEX);
-        queryTemplate.setQueryFromTemplate("find_employee.twig", params);
-        queryTemplate.setQueryTypeReference(new EmployeeTypeReference());
-        queryTemplate.addId(true);
+        QueryByTemplateRequest request = QueryByTemplateRequest.create()
+                .setAddId(true)
+                .setTypeReference(new EmployeeTypeReference())
+                .setIndexName(INDEX)
+                .setModelParams(params)
+                .setTemplateName("find_employee.twig");
 
-        return queryTemplate.execute();
+        return elasticTemplate.queryByTemplate(request);
     }
 
     public List<Employee> queryForEmployeesByNameAndEmail(String searchString) {
@@ -56,22 +55,24 @@ public class EmployeeService {
         params.put("searchText", searchString);
         params.put("operator", "and");
 
-        QueryTemplate<Employee> queryTemplate = queryTemplateFactory.createQueryTemplate();
-        queryTemplate.setIndexString(INDEX);
-        queryTemplate.setQueryFromTemplate("find_employee_by_email.twig", params);
-        queryTemplate.setQueryTypeReference(new EmployeeTypeReference());
-        queryTemplate.addId(true);
+        QueryByTemplateRequest request = QueryByTemplateRequest.create()
+                .setAddId(true)
+                .setTypeReference(new EmployeeTypeReference())
+                .setIndexName(INDEX)
+                .setModelParams(params)
+                .setTemplateName("find_employee_by_email.twig");
 
-        return queryTemplate.execute();
+        return elasticTemplate.queryByTemplate(request);
     }
 
     public Employee loadEmployeeById(String id) {
-        QueryByIdTemplate<Employee> queryByIdTemplate = queryTemplateFactory.createQueryByIdTemplate();
-        queryByIdTemplate.setId(id);
-        queryByIdTemplate.setIndex(INDEX);
-        queryByIdTemplate.setType(TYPE);
-        queryByIdTemplate.setTypeReference(new EmployeeByIdTypeReference());
+        QueryByIdRequest request = QueryByIdRequest.create()
+                .setAddId(true)
+                .setIndex(INDEX)
+                .setType(TYPE)
+                .setId(id)
+                .setTypeReference(new EmployeeByIdTypeReference());
 
-        return queryByIdTemplate.execute();
+        return elasticTemplate.querybyId(request);
     }
 }

@@ -2,7 +2,6 @@ package nl.gridshore;
 
 import nl.gridshore.elastic.cluster.ClusterService;
 import nl.gridshore.elastic.cluster.response.ClusterHealth;
-import nl.gridshore.elastic.query.QueryService;
 import nl.gridshore.elastic.index.IndexService;
 import nl.gridshore.employees.Employee;
 import nl.gridshore.employees.EmployeeService;
@@ -18,7 +17,6 @@ public class ElasticClientDemoApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(ElasticClientDemoApplication.class, args);
 
-        QueryService queryService = context.getBean(QueryService.class);
         EmployeeService employeeService = context.getBean(EmployeeService.class);
         ClusterService clusterService = context.getBean(ClusterService.class);
         IndexService indexService = context.getBean(IndexService.class);

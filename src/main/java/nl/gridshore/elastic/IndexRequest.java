@@ -8,6 +8,16 @@ public class IndexRequest {
     private String type;
     private String id;
     private Object entity;
+    private Boolean addId;
+
+    public Boolean getAddId() {
+        return addId;
+    }
+
+    public IndexRequest setAddId(Boolean addId) {
+        this.addId = addId;
+        return this;
+    }
 
     public String getIndex() {
         return index;

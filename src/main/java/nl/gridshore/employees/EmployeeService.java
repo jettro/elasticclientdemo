@@ -26,13 +26,13 @@ public class EmployeeService {
         this.elasticTemplate = elasticTemplate;
     }
 
-    public void createEmployee(Employee employee) {
+    public String createEmployee(Employee employee) {
         IndexRequest request = IndexRequest.create()
                 .setIndex(INDEX)
                 .setType(TYPE)
                 .setEntity(employee);
 
-        elasticTemplate.index(request);
+        return elasticTemplate.index(request);
     }
 
     public List<Employee> queryForEmployees(String name) {

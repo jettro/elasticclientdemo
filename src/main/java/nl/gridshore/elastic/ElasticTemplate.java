@@ -2,6 +2,7 @@ package nl.gridshore.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.gridshore.elastic.index.IndexDocumentException;
+import nl.gridshore.elastic.index.response.IndexResponse;
 import nl.gridshore.elastic.query.QueryByIdNotFoundException;
 import nl.gridshore.elastic.query.QueryExecutionException;
 import nl.gridshore.elastic.query.response.GetByIdResponse;
@@ -95,22 +96,34 @@ public class ElasticTemplate {
         }
     }
 
-    public void index(IndexRequest indexRequest) {
+    public String index(IndexRequest indexRequest) {
         try {
-// TODO Handle provided ID
             HttpEntity requestBody = new StringEntity(jacksonObjectMapper.writeValueAsString(indexRequest.getEntity()), Charset.defaultCharset());
 
-            Response response = client.performRequest(
-                    "POST",
-                    indexRequest.getIndex() + "/" + indexRequest.getType(),
-                    new Hashtable<>(),
-                    requestBody);
+            Response response;
+            if (indexRequest.getId() != null) {
+                response = client.performRequest(
+                        "PUT",
+                        indexRequest.getIndex() + "/" + indexRequest.getType() + "/" + indexRequest.getId(),
+                        new Hashtable<>(),
+                        requestBody);
+            } else {
+                response = client.performRequest(
+                        "POST",
+                        indexRequest.getIndex() + "/" + indexRequest.getType(),
+                        new Hashtable<>(),
+                        requestBody);
+            }
 
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode > 299) {
                 logger.warn("Problem while indexing a document: {}", response.getStatusLine().getReasonPhrase());
                 throw new QueryExecutionException("Could not index a document, status code is " + statusCode);
             }
+
+            IndexResponse queryResponse = jacksonObjectMapper.readValue(response.getEntity().getContent(), IndexResponse.class);
+
+            return queryResponse.getId();
 
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);

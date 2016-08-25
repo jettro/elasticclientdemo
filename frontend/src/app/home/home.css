@@ -1,0 +1,7 @@
+.wrapper {
+    background: lightgreen;
+}
+
+.selected {
+    background-color: pink;
+}

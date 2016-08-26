@@ -30,6 +30,11 @@ public class EmployeeController {
         return service.queryForEmployees(name);
     }
 
+    @RequestMapping(method = GET, value = "/_search")
+    public List<Employee> searchEmployees(@RequestParam String term) {
+        return service.queryForEmployees(term);
+    }
+
     @RequestMapping(method = GET, value = "/{id}")
     public Employee employeeById(@PathVariable String id) {
         return service.loadEmployeeById(id);

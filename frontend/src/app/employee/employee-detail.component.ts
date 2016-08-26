@@ -6,9 +6,10 @@ import {EmployeeService} from "../services/employee.service";
 @Component({
     selector: "my-employee-detail",
     styles: [require('./employee-detail.css')],
-    template: require('./employee-detail.html'),
+    template: require('./employee-detail.html')
 })
 export class EmployeeDetailComponent implements OnInit {
+    // @Output() close = new EventEmitter();
     employee: Employee;
     error: any;
 
@@ -39,7 +40,6 @@ export class EmployeeDetailComponent implements OnInit {
     }
 
     save(): void {
-        console.log(this.employee);
         this.employeeService
             .storeEmployee(this.employee)
             .then(employee => {

@@ -42,7 +42,7 @@ public class EmployeeService {
     public List<Employee> queryForEmployees(String name) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);
-        params.put("operator", "and");
+        params.put("operator", "or");
 
         QueryByTemplateRequest request = QueryByTemplateRequest.create()
                 .setAddId(true)

@@ -10,11 +10,19 @@ import {FormsModule} from "@angular/forms";
 import {EmployeeDetailComponent} from "./employee/employee-detail.component";
 import {EmployeesComponent} from "./employee/employees.component";
 import {HttpModule} from "@angular/http";
+import {EmployeeSearchComponent} from "./employee/employee-search.component";
 
 @NgModule({
     imports: [BrowserModule, FormsModule, routing, HttpModule],
     providers: [Logger, EmployeeService],
-    declarations: [AppComponent, HomeComponent, AboutComponent, EmployeesComponent, EmployeeDetailComponent],
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        AboutComponent,
+        EmployeesComponent,
+        EmployeeDetailComponent,
+        EmployeeSearchComponent
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

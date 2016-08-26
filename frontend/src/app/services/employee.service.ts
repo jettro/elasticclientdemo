@@ -3,12 +3,19 @@ import {Logger} from "../logger.service";
 import {Injectable} from "@angular/core";
 import {Http, Headers, Response} from "@angular/http";
 import "rxjs/add/operator/toPromise";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class EmployeeService {
     private employeeUrl: string = "http://localhost:8080/api/employee";
 
     constructor(private logger: Logger, private http: Http) {
+    }
+
+    searchEmployee(term: string): Observable<Employee[]> {
+        return this.http
+            .get(`${this.employeeUrl}/_search?term=${term}`)
+            .map((r: Response) => r.json() as Employee[]);
     }
 
     findEmployees(): Promise<Employee[]> {

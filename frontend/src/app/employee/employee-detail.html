@@ -1,6 +1,8 @@
 <div *ngIf="employee != null">
     <h2>Update Employee</h2>
-    <div><label>Name</label><input  [ngModel]="employee.name" placeholder="name"/></div>
-    <div><label>Email</label><input [ngModel]="employee.email" placeholder="email"/></div>
-    <div><button (click)="goBack()">Back</button></div>
+    <div class="error" *ngIf="error">{{error}}</div>
+    <div><label>Name</label><input [(ngModel)]="employee.name" placeholder="name"/></div>
+    <div><label>Email</label><input [(ngModel)]="employee.email" placeholder="email"/></div>
+    <button (click)="goBack()">Back</button>
+    <button (click)="save()">Save</button>
 </div>

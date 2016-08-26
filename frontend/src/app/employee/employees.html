@@ -1,9 +1,14 @@
 <div class="wrapper">
     <h2>Employee registration</h2>
     <p>This page shows the employees and a button to register a new one!</p>
+    <button (click)="addEmployee()">Add New Employee</button>
+    <button (click)="loadEmployees()">Refresh</button>
     <ul>
-        <li *ngFor="let employee of employees" (click)="gotoDetail(employee)">
-            <span>{{employee.id}}</span><span>{{employee.name}}</span>
+        <li *ngFor="let employee of employees">
+            <div (click)="gotoDetail(employee)">
+                <span>{{employee.id}}</span><span>{{employee.name}}</span>
+            </div>
+            <button class="delete-button" (click)="deleteEmployee(employee, $event)">Delete</button>
         </li>
     </ul>
 </div>

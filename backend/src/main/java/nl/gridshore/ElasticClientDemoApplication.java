@@ -53,7 +53,7 @@ public class ElasticClientDemoApplication {
         jettro.setPhoneNumber("+31612345678");
         jettro.setSpecialties(new String[]{"java", "elasticsearch", "angularjs"});
 
-        employeeService.createEmployee(jettro);
+        employeeService.storeEmployee(jettro);
 
         Employee byron = new Employee();
         byron.setName("Byron Voorbach");
@@ -61,7 +61,7 @@ public class ElasticClientDemoApplication {
         byron.setPhoneNumber("+31612345678");
         byron.setSpecialties(new String[]{"java", "elasticsearch", "security"});
 
-        employeeService.createEmployee(byron);
+        employeeService.storeEmployee(byron);
 
         Employee ralph = new Employee();
         ralph.setName("Ralph Broers");
@@ -69,7 +69,7 @@ public class ElasticClientDemoApplication {
         ralph.setPhoneNumber("+31612345678");
         ralph.setSpecialties(new String[]{"java", "elasticsearch", "rx"});
 
-        employeeService.createEmployee(ralph);
+        employeeService.storeEmployee(ralph);
 
         Employee roberto = new Employee();
         roberto.setName("Roberto van der Linden");
@@ -77,6 +77,6 @@ public class ElasticClientDemoApplication {
         roberto.setPhoneNumber("+31612345678");
         roberto.setSpecialties(new String[]{"java", "elasticsearch", "ionicframework"});
 
-        employeeService.createEmployee(roberto);
+        employeeService.storeEmployee(roberto);
     }
 }

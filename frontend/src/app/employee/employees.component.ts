@@ -11,6 +11,7 @@ import {Router} from "@angular/router";
 })
 export class EmployeesComponent implements OnInit {
     employees : Employee[];
+    error: any;
 
     constructor(private employeeService : EmployeeService, private router: Router) {}
 
@@ -19,9 +20,27 @@ export class EmployeesComponent implements OnInit {
         this.router.navigate(link);
     }
 
+    deleteEmployee(employee: Employee, event: any): void {
+        event.stopPropagation();
+        this.employeeService
+            .removeEmployee(employee)
+            .then(() => {
+                this.loadEmployees();
+            })
+            .catch(error => this.error = error);
+    }
+
+    addEmployee(): void {
+        let link = ['/employee/'];
+        this.router.navigate(link);
+    }
+
     ngOnInit(): void {
+        this.loadEmployees();
+    }
+
+    loadEmployees(): void {
         this.employeeService.findEmployees().then(employees => {
-            console.log(employees);
             this.employees = employees;
         });
     }

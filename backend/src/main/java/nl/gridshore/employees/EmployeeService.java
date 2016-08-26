@@ -26,11 +26,15 @@ public class EmployeeService {
         this.elasticTemplate = elasticTemplate;
     }
 
-    public String createEmployee(Employee employee) {
+    public String storeEmployee(Employee employee) {
         IndexRequest request = IndexRequest.create()
                 .setIndex(INDEX)
                 .setType(TYPE)
                 .setEntity(employee);
+
+        if (employee.getId() != null) {
+            request.setId(employee.getId());
+        }
 
         return elasticTemplate.index(request);
     }
@@ -74,5 +78,9 @@ public class EmployeeService {
                 .setTypeReference(new EmployeeByIdTypeReference());
 
         return elasticTemplate.querybyId(request);
+    }
+
+    public void removeEmployee(String id) {
+        elasticTemplate.remove(INDEX, TYPE, id);
     }
 }

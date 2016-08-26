@@ -6,6 +6,7 @@ import {EmployeeDetailComponent} from "./employee/employee-detail.component";
 const appRoutes: Routes = [
     {path: 'home', component: HomeComponent},
     {path: 'about', component: AboutComponent},
+    {path: 'employee', component: EmployeeDetailComponent},
     {path: 'employee/:id', component: EmployeeDetailComponent},
     {path: '',redirectTo: '/home',pathMatch: 'full'}
 ];

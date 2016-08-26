@@ -132,6 +132,20 @@ public class ElasticTemplate {
 
     }
 
+    public String remove(String index, String type, String id) {
+        try {
+            Response response = client.performRequest(
+                    "DELETE",
+                    index + "/" + type + "/" + id,
+                    new Hashtable<>());
+            return response.getStatusLine().getReasonPhrase();
+        } catch (IOException e) {
+            logger.warn("Problem while removing a document.", e);
+            throw new IndexDocumentException("Error when removing a document");
+        }
+    }
+
+
     private <T> void addIdToEntity(String id, T source) {
         Method setIdMethod;
         try {

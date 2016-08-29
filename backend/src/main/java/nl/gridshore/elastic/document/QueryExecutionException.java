@@ -1,4 +1,4 @@
-package nl.gridshore.elastic.query;
+package nl.gridshore.elastic.document;
 
 /**
  * Exception thrown when elastic throws an error.

@@ -1,12 +1,10 @@
-package nl.gridshore.elastic;
+package nl.gridshore.elastic.document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.gridshore.elastic.index.IndexDocumentException;
 import nl.gridshore.elastic.index.response.IndexResponse;
-import nl.gridshore.elastic.query.QueryByIdNotFoundException;
-import nl.gridshore.elastic.query.QueryExecutionException;
-import nl.gridshore.elastic.query.response.GetByIdResponse;
-import nl.gridshore.elastic.query.response.QueryResponse;
+import nl.gridshore.elastic.document.response.GetByIdResponse;
+import nl.gridshore.elastic.document.response.QueryResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.elasticsearch.client.Response;
@@ -27,21 +25,27 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * Created by jettrocoenradie on 23/08/2016.
+ * Used to execute actions that interact with the documents in an elasticsearch index.
  */
 @Component
-public class ElasticTemplate {
-    private static final Logger logger = LoggerFactory.getLogger(ElasticTemplate.class);
+public class DocumentService {
+    private static final Logger logger = LoggerFactory.getLogger(DocumentService.class);
 
     private final RestClient client;
     private final ObjectMapper jacksonObjectMapper;
 
     @Autowired
-    public ElasticTemplate(RestClient client, ObjectMapper jacksonObjectMapper) {
+    public DocumentService(RestClient client, ObjectMapper jacksonObjectMapper) {
         this.client = client;
         this.jacksonObjectMapper = jacksonObjectMapper;
     }
 
+    /**
+     * Executes a search query using the provided template
+     * @param request Object containing the required parameters to execute the request
+     * @param <T> Type of resulting objects, must be mapped from json result into java entity
+     * @return List of mapped objects
+     */
     public <T> List<T> queryByTemplate(QueryByTemplateRequest request) {
         Assert.notNull(request, "Need to provide a QueryByTemplateRequest object");
 
@@ -66,11 +70,18 @@ public class ElasticTemplate {
             return result;
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);
-            throw new QueryExecutionException("Error when executing a query");
+            throw new QueryExecutionException("Error when executing a document");
         }
 
     }
 
+    /**
+     * By specifying the unique identification of an object we can return only that object. If we cannot find the object
+     * we throw an {@link QueryByIdNotFoundException}.
+     * @param request Object containing the required parameters
+     * @param <T> Type of the object to be mapped to
+     * @return Found object of type T
+     */
     public <T> T querybyId(QueryByIdRequest request) {
         try {
             Response response = client.performRequest(
@@ -92,10 +103,16 @@ public class ElasticTemplate {
             return entity;
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);
-            throw new QueryExecutionException("Error when executing a query");
+            throw new QueryExecutionException("Error when executing a document");
         }
     }
 
+    /**
+     * Index the provided document using the provided parameters. If an id is provided we do an update, of no id is
+     * provided we do an inset and we return the id.
+     * @param indexRequest Object containing the required parameters
+     * @return Generated ID
+     */
     public String index(IndexRequest indexRequest) {
         try {
             HttpEntity requestBody = new StringEntity(jacksonObjectMapper.writeValueAsString(indexRequest.getEntity()), Charset.defaultCharset());
@@ -127,11 +144,18 @@ public class ElasticTemplate {
 
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);
-            throw new IndexDocumentException("Error when executing a query");
+            throw new IndexDocumentException("Error when executing a document");
         }
 
     }
 
+    /**
+     * Removes the document with the provided unique identification.
+     * @param index String containing the index part
+     * @param type String contaning the type part
+     * @param id String containing the id part
+     * @return Message line that can be used to see if we succeeded.
+     */
     public String remove(String index, String type, String id) {
         try {
             Response response = client.performRequest(

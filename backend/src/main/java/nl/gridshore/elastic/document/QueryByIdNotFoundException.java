@@ -1,4 +1,4 @@
-package nl.gridshore.elastic.query;
+package nl.gridshore.elastic.document;
 
 public class QueryByIdNotFoundException extends RuntimeException {
     private String index;

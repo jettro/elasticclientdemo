@@ -1,12 +1,20 @@
 package nl.gridshore.employees;
 
-import nl.gridshore.elastic.ElasticTemplate;
-import nl.gridshore.elastic.IndexRequest;
-import nl.gridshore.elastic.QueryByIdRequest;
-import nl.gridshore.elastic.QueryByTemplateRequest;
+import nl.gridshore.elastic.document.DocumentService;
+import nl.gridshore.elastic.document.IndexRequest;
+import nl.gridshore.elastic.document.QueryByIdRequest;
+import nl.gridshore.elastic.document.QueryByTemplateRequest;
+import nl.gridshore.elastic.index.IndexService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,14 +24,18 @@ import java.util.Map;
  */
 @Service
 public class EmployeeService {
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
+
     public static final String INDEX = "luminis";
     private static final String TYPE = "ams";
 
-    private final ElasticTemplate elasticTemplate;
+    private final DocumentService elasticTemplate;
+    private final IndexService indexService;
 
     @Autowired
-    public EmployeeService(ElasticTemplate elasticTemplate) {
+    public EmployeeService(DocumentService elasticTemplate, IndexService indexService) {
         this.elasticTemplate = elasticTemplate;
+        this.indexService = indexService;
     }
 
     public String storeEmployee(Employee employee) {
@@ -82,5 +94,17 @@ public class EmployeeService {
 
     public void removeEmployee(String id) {
         elasticTemplate.remove(INDEX, TYPE, id);
+    }
+
+    public void createIndex() {
+        try {
+            File file = ResourceUtils.getFile("classpath:elastic/luminis-mapping.json");
+            FileReader fileReader = new FileReader(file);
+            String body = FileCopyUtils.copyToString(fileReader);
+            fileReader.close();
+            indexService.createIndex(INDEX, body);
+        } catch (IOException e) {
+            logger.warn("Could not read mapping file for creating index", e);
+        }
     }
 }

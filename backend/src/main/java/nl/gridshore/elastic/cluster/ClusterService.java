@@ -45,7 +45,7 @@ public class ClusterService {
 
         } catch (IOException e) {
             logger.warn("Problem while executing request.", e);
-            throw new ClusterApiException("Error when executing a query");
+            throw new ClusterApiException("Error when executing a document");
         }
     }
 

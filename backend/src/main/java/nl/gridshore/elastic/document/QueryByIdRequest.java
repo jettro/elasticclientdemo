@@ -1,4 +1,4 @@
-package nl.gridshore.elastic;
+package nl.gridshore.elastic.document;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 

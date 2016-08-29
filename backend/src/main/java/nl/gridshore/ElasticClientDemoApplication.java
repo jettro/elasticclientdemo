@@ -18,35 +18,16 @@ public class ElasticClientDemoApplication {
         ConfigurableApplicationContext context = SpringApplication.run(ElasticClientDemoApplication.class, args);
 
         EmployeeService employeeService = context.getBean(EmployeeService.class);
-        ClusterService clusterService = context.getBean(ClusterService.class);
         IndexService indexService = context.getBean(IndexService.class);
-
-        ClusterHealth clusterHealth = clusterService.checkClusterHealth();
-
-        System.out.println(clusterHealth);
 
         if (!indexService.indexExist(EmployeeService.INDEX)) {
             createEmployees(employeeService);
         }
-
-        System.out.println("Should only print one result");
-        queryForEmployees(employeeService, "Jettro Coenradie");
-
-        System.out.println("Should do a match_all query");
-        queryForEmployees(employeeService, "");
-
-        System.out.println("Should do a multi_match on name and email query");
-        List<Employee> foundEmployees = employeeService.queryForEmployeesByNameAndEmail("gridshore.nl");
-        foundEmployees.forEach(System.out::println);
-
-    }
-
-    private static void queryForEmployees(EmployeeService employeeService, String name) {
-        List<Employee> foundEmployees = employeeService.queryForEmployees(name);
-        foundEmployees.forEach(System.out::println);
     }
 
     private static void createEmployees(EmployeeService employeeService) {
+        employeeService.createIndex();
+
         Employee jettro = new Employee();
         jettro.setName("Jettro Coenradie");
         jettro.setEmail("jettro@gridshore.nl");

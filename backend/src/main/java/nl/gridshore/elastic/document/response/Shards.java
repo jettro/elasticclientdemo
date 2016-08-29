@@ -1,4 +1,4 @@
-package nl.gridshore.elastic.query.response;
+package nl.gridshore.elastic.document.response;
 
 /**
  * Created by jettrocoenradie on 08/07/2016.

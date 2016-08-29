@@ -1,4 +1,3 @@
-
 import {OnInit, Component} from "@angular/core";
 import {EmployeeService} from "../services/employee.service";
 import {Employee} from "../services/employee";
@@ -14,10 +13,13 @@ import {Router} from "@angular/router";
 export class EmployeeSearchComponent implements OnInit {
     employees: Observable<Employee[]>;
 
+    searchTerm: string;
+
     private searchTerms = new Subject<string>();
 
     constructor(private employeeService: EmployeeService,
-                private router: Router){};
+                private router: Router) {
+    };
 
     ngOnInit(): void {
         this.employees = this.searchTerms
@@ -32,8 +34,8 @@ export class EmployeeSearchComponent implements OnInit {
             });
     }
 
-    search(term:string): void {
-        this.searchTerms.next(term);
+    search(event: any): void {
+        this.searchTerms.next(event);
     }
 
     gotoDetail(employee: Employee): void {

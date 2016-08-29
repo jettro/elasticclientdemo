@@ -1,8 +1,15 @@
-<div *ngIf="employee != null">
-    <h2>Update Employee</h2>
-    <div class="error" *ngIf="error">{{error}}</div>
-    <div><label>Name</label><input [(ngModel)]="employee.name" placeholder="name"/></div>
-    <div><label>Email</label><input [(ngModel)]="employee.email" placeholder="email"/></div>
-    <button (click)="goBack()">Back</button>
-    <button (click)="save()">Save</button>
-</div>
+<md-card *ngIf="employee != null">
+    <md-toolbar color="primary">
+        <span>Update Employee</span>
+        <md-icon>save</md-icon>
+    </md-toolbar>
+    <md-card-content>
+        <div class="error" *ngIf="error">{{error}}</div>
+        <div>
+            <div><md-input [(ngModel)]="employee.name" placeholder="name"></md-input></div>
+            <div><md-input [(ngModel)]="employee.email" placeholder="email"></md-input></div>
+            <button (click)="goBack()" md-icon-button><md-icon>undo</md-icon></button>
+            <button (click)="save()" md-icon-button><md-icon>save</md-icon></button>
+        </div>
+    </md-card-content>
+</md-card>

@@ -1,10 +1,25 @@
-<div class="wrapper">
-    <h1>Employees Manager</h1>
+<md-sidenav-layout>
+    <md-sidenav #sidenav mode="side" class="app-sidenav">
+        Sidenav
+    </md-sidenav>
+    <md-toolbar>
+        <button (click)="sidenav.toggle()" md-icon-button>
+            <md-icon class="md-24">menu</md-icon>
+        </button>
+        <span>Employees Manager</span>
+    </md-toolbar>
+
     <div>
-        <a routerLink="/home">Home</a>
-        <a routerLink="/about">About</a>
+        <md-card>
+            <div>
+                <a routerLink="/home" md-raised-button>Home</a>
+                <a routerLink="/search" md-raised-button>Search</a>
+                <a routerLink="/about" md-raised-button>About</a>
+            </div>
+        </md-card>
+        <div>
+            <router-outlet></router-outlet>
+        </div>
     </div>
-    <div>
-        <router-outlet></router-outlet>
-    </div>
-</div>
+</md-sidenav-layout>
+

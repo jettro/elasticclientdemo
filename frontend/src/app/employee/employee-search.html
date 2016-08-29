@@ -1,10 +1,18 @@
-<div id="search-component">
-    <h4>Employee Search</h4>
-    <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
-    <div>
-        <div *ngFor="let employee of employees | async"
-             (click)="gotoDetail(employee)" class="search-result" >
-            {{employee.name}}
+<md-card>
+    <md-toolbar color="primary">
+        <span>Employee Search</span>
+        <md-icon>search</md-icon>
+    </md-toolbar>
+    <md-card-content>
+        <div>
+            <!--<md-input (keyup)="search(searchBox.value)"></md-input>-->
+            <md-input [ngModel]="searchTerm" (ngModelChange)="search($event)" placeholder="search term"></md-input>
+            <!--<md-input (ngChange)="search($event)" placeholder="search term"></md-input>-->
+            <button (click)="search()" md-icon-button><md-icon>search</md-icon></button>
+            <div *ngFor="let employee of employees | async"
+                 (click)="gotoDetail(employee)" class="search-result" >
+                {{employee.name}}
+            </div>
         </div>
-    </div>
-</div>
+    </md-card-content>
+</md-card>

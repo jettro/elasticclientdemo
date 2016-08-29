@@ -11,9 +11,17 @@ import {EmployeeDetailComponent} from "./employee/employee-detail.component";
 import {EmployeesComponent} from "./employee/employees.component";
 import {HttpModule} from "@angular/http";
 import {EmployeeSearchComponent} from "./employee/employee-search.component";
+import {MdCardModule} from "@angular2-material/card";
+import {MdToolbarModule} from "@angular2-material/toolbar";
+import {MdSidenavModule} from "@angular2-material/sidenav";
+import {MdIconModule} from "@angular2-material/icon";
+import {MdListModule} from "@angular2-material/list";
+import {MdButtonModule} from "@angular2-material/button";
+import {MdInputModule} from "@angular2-material/input";
+import {SearchComponent} from "./search/search.component";
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, routing, HttpModule],
+    imports: [BrowserModule, FormsModule, routing, HttpModule, MdCardModule, MdToolbarModule, MdSidenavModule, MdIconModule, MdListModule, MdButtonModule, MdInputModule],
     providers: [Logger, EmployeeService],
     declarations: [
         AppComponent,
@@ -21,7 +29,8 @@ import {EmployeeSearchComponent} from "./employee/employee-search.component";
         AboutComponent,
         EmployeesComponent,
         EmployeeDetailComponent,
-        EmployeeSearchComponent
+        EmployeeSearchComponent,
+        SearchComponent
     ],
     bootstrap: [AppComponent]
 })

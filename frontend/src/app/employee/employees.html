@@ -1,14 +1,23 @@
-<div class="wrapper">
-    <h2>Employee registration</h2>
-    <p>This page shows the employees and a button to register a new one!</p>
-    <button (click)="addEmployee()">Add New Employee</button>
-    <button (click)="loadEmployees()">Refresh</button>
-    <ul>
-        <li *ngFor="let employee of employees">
-            <div (click)="gotoDetail(employee)">
-                <span>{{employee.id}}</span><span>{{employee.name}}</span>
-            </div>
-            <button class="delete-button" (click)="deleteEmployee(employee, $event)">Delete</button>
-        </li>
-    </ul>
-</div>
+<md-card>
+    <md-toolbar color="primary">
+        <span>Employees</span>
+        <button (click)="addEmployee()" md-icon-button><md-icon>add</md-icon></button>
+        <button (click)="loadEmployees()" md-icon-button><md-icon>refresh</md-icon></button>
+    </md-toolbar>
+    <md-card-content>
+        <p>This page shows the employees and a button to register a new one!</p>
+        <md-list>
+            <md-list-item *ngFor="let employee of employees">
+                <h3 md-line>{{employee.name}}</h3>
+                <p md-line>
+                    <span>{{employee.email}}</span>
+                    <span>
+                    <button (click)="gotoDetail(employee)" md-icon-button><md-icon>edit</md-icon></button>
+                    <button (click)="deleteEmployee(employee, $event)" md-icon-button><md-icon>delete</md-icon></button>
+                </span>
+                </p>
+            </md-list-item>
+        </md-list>
+
+    </md-card-content>
+</md-card>

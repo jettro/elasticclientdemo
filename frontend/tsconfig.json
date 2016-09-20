@@ -4,7 +4,7 @@
     "experimentalDecorators": true,
     "module": "commonjs",
     "noEmit": true,
-    "types":["es6-shim", "jasmine"],
+    "types":["es6-shim", "jasmine", "hammerjs"],
     "sourceMap": true,
     "target": "es5"
   },

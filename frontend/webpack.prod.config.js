@@ -40,11 +40,7 @@ module.exports = {
         new CopyWebpackPlugin([{from: './src/index.html', to: 'index.html'}]),
         new DedupePlugin(),
         new DefinePlugin({'webpack': {'ENV': JSON.stringify(metadata.env)}}),
-        new OccurenceOrderPlugin(true),
-        new UglifyJsPlugin({
-            compress: {screw_ie8 : true},
-            mangle: {screw_ie8 : true}
-        })
+        new OccurenceOrderPlugin(true)
     ],
     resolve: {
         extensions: ['', '.ts', '.js']

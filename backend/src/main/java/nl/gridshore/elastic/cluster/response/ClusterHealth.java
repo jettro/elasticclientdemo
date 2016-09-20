@@ -9,6 +9,7 @@ public class ClusterHealth {
     private String status;
     @JsonProperty(value = "number_of_nodes")
     private int numberOfNodes;
+    private Object numberOfDataNodes;
 
     public String getClusterName() {
         return clusterName;
@@ -42,4 +43,5 @@ public class ClusterHealth {
                 ", numberOfNodes=" + numberOfNodes +
                 '}';
     }
+
 }

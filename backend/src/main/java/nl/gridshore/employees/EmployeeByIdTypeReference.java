@@ -1,7 +1,7 @@
 package nl.gridshore.employees;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import nl.gridshore.elastic.document.response.GetByIdResponse;
+import eu.luminis.elastic.document.response.GetByIdResponse;
 
 /**
  * Created by jettrocoenradie on 18/08/2016.

@@ -1,7 +1,7 @@
 package nl.gridshore.employees;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import nl.gridshore.elastic.document.response.QueryResponse;
+import eu.luminis.elastic.document.response.QueryResponse;
 
 /**
  * TypeReference ref = new TypeReference<ResponseHits<Employee>>() {};

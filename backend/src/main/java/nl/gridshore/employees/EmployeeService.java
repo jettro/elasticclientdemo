@@ -1,10 +1,10 @@
 package nl.gridshore.employees;
 
-import nl.gridshore.elastic.document.DocumentService;
-import nl.gridshore.elastic.document.IndexRequest;
-import nl.gridshore.elastic.document.QueryByIdRequest;
-import nl.gridshore.elastic.document.QueryByTemplateRequest;
-import nl.gridshore.elastic.index.IndexService;
+import eu.luminis.elastic.document.DocumentService;
+import eu.luminis.elastic.document.IndexRequest;
+import eu.luminis.elastic.document.QueryByIdRequest;
+import eu.luminis.elastic.document.QueryByTemplateRequest;
+import eu.luminis.elastic.index.IndexService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +29,12 @@ public class EmployeeService {
     public static final String INDEX = "luminis";
     private static final String TYPE = "ams";
 
-    private final DocumentService elasticTemplate;
+    private final DocumentService documentService;
     private final IndexService indexService;
 
     @Autowired
-    public EmployeeService(DocumentService elasticTemplate, IndexService indexService) {
-        this.elasticTemplate = elasticTemplate;
+    public EmployeeService(DocumentService documentService, IndexService indexService) {
+        this.documentService = documentService;
         this.indexService = indexService;
     }
 
@@ -48,7 +48,7 @@ public class EmployeeService {
             request.setId(employee.getId());
         }
 
-        return elasticTemplate.index(request);
+        return documentService.index(request);
     }
 
     public List<Employee> queryForEmployees(String name) {
@@ -63,7 +63,7 @@ public class EmployeeService {
                 .setModelParams(params)
                 .setTemplateName("find_employee.twig");
 
-        return elasticTemplate.queryByTemplate(request);
+        return documentService.queryByTemplate(request);
     }
 
     public List<Employee> queryForEmployeesByNameAndEmail(String searchString) {
@@ -78,7 +78,7 @@ public class EmployeeService {
                 .setModelParams(params)
                 .setTemplateName("find_employee_by_email.twig");
 
-        return elasticTemplate.queryByTemplate(request);
+        return documentService.queryByTemplate(request);
     }
 
     public Employee loadEmployeeById(String id) {
@@ -89,11 +89,11 @@ public class EmployeeService {
                 .setId(id)
                 .setTypeReference(new EmployeeByIdTypeReference());
 
-        return elasticTemplate.querybyId(request);
+        return documentService.querybyId(request);
     }
 
     public void removeEmployee(String id) {
-        elasticTemplate.remove(INDEX, TYPE, id);
+        documentService.remove(INDEX, TYPE, id);
     }
 
     public void createIndex() {

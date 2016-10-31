@@ -1,17 +1,16 @@
 package nl.gridshore;
 
-import nl.gridshore.elastic.cluster.ClusterService;
-import nl.gridshore.elastic.cluster.response.ClusterHealth;
-import nl.gridshore.elastic.index.IndexService;
+import eu.luminis.elastic.RestClientConfig;
+import eu.luminis.elastic.index.IndexService;
 import nl.gridshore.employees.Employee;
 import nl.gridshore.employees.EmployeeService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import java.util.List;
+import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
+@Import(RestClientConfig.class)
 public class ElasticClientDemoApplication {
 
     public static void main(String[] args) {

@@ -1,10 +1,12 @@
 package nl.gridshore.employees;
 
+import eu.luminis.elastic.document.DeleteRequest;
 import eu.luminis.elastic.document.DocumentService;
 import eu.luminis.elastic.document.IndexRequest;
 import eu.luminis.elastic.document.QueryByIdRequest;
-import eu.luminis.elastic.document.QueryByTemplateRequest;
 import eu.luminis.elastic.index.IndexService;
+import eu.luminis.elastic.search.SearchByTemplateRequest;
+import eu.luminis.elastic.search.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,18 +33,17 @@ public class EmployeeService {
 
     private final DocumentService documentService;
     private final IndexService indexService;
+    private final SearchService searchService;
 
     @Autowired
-    public EmployeeService(DocumentService documentService, IndexService indexService) {
+    public EmployeeService(DocumentService documentService, IndexService indexService, SearchService searchService) {
         this.documentService = documentService;
         this.indexService = indexService;
+        this.searchService = searchService;
     }
 
     public String storeEmployee(Employee employee) {
-        IndexRequest request = IndexRequest.create()
-                .setIndex(INDEX)
-                .setType(TYPE)
-                .setEntity(employee);
+        IndexRequest request = new IndexRequest(INDEX, TYPE).setEntity(employee);
 
         if (employee.getId() != null) {
             request.setId(employee.getId());
@@ -56,14 +57,14 @@ public class EmployeeService {
         params.put("name", name);
         params.put("operator", "or");
 
-        QueryByTemplateRequest request = QueryByTemplateRequest.create()
+        SearchByTemplateRequest request = SearchByTemplateRequest.create()
                 .setAddId(true)
                 .setTypeReference(new EmployeeTypeReference())
                 .setIndexName(INDEX)
                 .setModelParams(params)
                 .setTemplateName("find_employee.twig");
 
-        return documentService.queryByTemplate(request);
+        return searchService.queryByTemplate(request);
     }
 
     public List<Employee> queryForEmployeesByNameAndEmail(String searchString) {
@@ -71,29 +72,27 @@ public class EmployeeService {
         params.put("searchText", searchString);
         params.put("operator", "and");
 
-        QueryByTemplateRequest request = QueryByTemplateRequest.create()
+        SearchByTemplateRequest request = SearchByTemplateRequest.create()
                 .setAddId(true)
                 .setTypeReference(new EmployeeTypeReference())
                 .setIndexName(INDEX)
                 .setModelParams(params)
                 .setTemplateName("find_employee_by_email.twig");
 
-        return documentService.queryByTemplate(request);
+        return searchService.queryByTemplate(request);
     }
 
     public Employee loadEmployeeById(String id) {
-        QueryByIdRequest request = QueryByIdRequest.create()
+        QueryByIdRequest request = new QueryByIdRequest(INDEX, TYPE, id)
                 .setAddId(true)
-                .setIndex(INDEX)
-                .setType(TYPE)
-                .setId(id)
                 .setTypeReference(new EmployeeByIdTypeReference());
 
-        return documentService.querybyId(request);
+        return documentService.queryById(request);
     }
 
     public void removeEmployee(String id) {
-        documentService.remove(INDEX, TYPE, id);
+        DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, id);
+        documentService.remove(deleteRequest);
     }
 
     public void createIndex() {
